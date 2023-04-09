@@ -1,6 +1,8 @@
 import json
 import csv
-from flask import Flask, request, jsonify
+import io
+import zipfile
+from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 import data_filter
 
@@ -68,6 +70,19 @@ def save_csv(data, filename):
 # Load your JSON data
 with open("data.json") as f:
     json_data = json.load(f)
+
+    @app.route("/data")
+    def get_data():
+        # Open the CSV file and PDF file and add them to a ZIP archive
+        csv_file = open("filtered_data.csv", "rb")
+        pdf_file = open("Data Screening Technical Report.pdf", "rb")
+        memory_file = io.BytesIO()
+        with zipfile.ZipFile(memory_file, "w") as zf:
+            zf.writestr("filtered_data.csv", csv_file.read())
+            zf.writestr("Data Screening Technical Report.pdf", pdf_file.read())
+        memory_file.seek(0)
+        # Return the ZIP archive
+        return send_file(memory_file, download_name="data.zip")
 
     # Set the frame range and names you want to filter
     @app.route("/filter", methods=["POST"])

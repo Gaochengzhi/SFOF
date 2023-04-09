@@ -1,4 +1,3 @@
-import React from "react";
 import { Checkbox, Slider } from 'antd';
 export function FilterData({
     active,

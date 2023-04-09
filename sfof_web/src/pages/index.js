@@ -1,11 +1,10 @@
-import { DataPreview } from './../component/dataPreview';
-import { Foot } from './../component/foot';
-import { FilterData } from './../component/filterData';
+import { DataPreview } from '../component/dataPreview';
+// import { Foot } from './../component/foot';
+import { FilterData } from '../component/filterData';
 import { Header } from './../component/header';
 import { SelectFile } from '../component/selectFile';
 import { useState } from 'react'
 import axios from 'axios';
-// import 'antd/dist/antd.css';
 
 
 
@@ -26,7 +25,7 @@ export default function Home() {
         setFrameList(newValue);
     };
     const handleFileInput = (e) => {
-        setSelectedFile(e.target.files[0]);
+        // setSelectedFile(e.target.files[0]);
     };
 
     const [checkedVtItems, setCheckedVtItems] = useState({
@@ -62,13 +61,17 @@ export default function Home() {
 
     async function fetchData(selectName) {
         try {
-            const response = await axios.post('http://127.0.0.1:5000/filter', {
+            const response = await axios.post('http://124.220.179.145:5000/filter', {
                 frame_range: framList,
                 selected_names: selectName,
             })
             setPreviewList(response.data.preview)
+            setIsLoading(false)
+
+
             // The filtered data will be available in response.data
             console.log(previewList);
+
         } catch (error) {
             console.error(error);
         }
@@ -95,15 +98,16 @@ export default function Home() {
     return (
         <main className="flex min-h-screen flex-col items-center p-24 space-y-3">
             <Header />
+            <div className='text-3xl my-4'>Data filtering system</div>
 
             <SelectFile active={active} selectedFile={selectedFile} handleFileInput={handleFileInput} handleUpload={handleUploadFile} selectedFile2={selectedFile2} />
 
             <FilterData active={active} checkboxVtElements={checkboxVtElements} checkedItemsList={checkedItemsList} framList={framList} handleSliderChange={handleSliderChange} handleFilterFile={handleFilterFile} />
-            <DataPreview isLoading={isLoading} previewList={previewList} />
+            <DataPreview isLoading={isLoading} previewList={previewList} isVisible={isVisible} />
 
 
 
-            <Foot />
+            {/* <Foot /> */}
         </main >
     )
 }
